@@ -51,3 +51,30 @@ resource "azurerm_network_interface" "nic" {
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 }
+
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                = "vm-devops-project"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = var.vm_size
+  admin_username      = var.admin_username
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+  network_interface_ids = [
+    azurerm_network_interface.nic.id,
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
