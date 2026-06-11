@@ -51,6 +51,13 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location            = azurerm_resource_group.rg.location
   size                = var.vm_size
   admin_username      = var.admin_username
+  custom_data = base64encode(<<-EOF
+    #!/bin/bash
+    sudo apt-get update
+    sudo apt-get install -y docker.io
+    sudo docker run -d -p 80:80 nginx
+  EOF
+  )
   admin_ssh_key {
     username   = var.admin_username
     public_key = var.ssh_public_key
