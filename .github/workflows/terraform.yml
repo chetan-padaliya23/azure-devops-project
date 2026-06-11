@@ -49,5 +49,5 @@ jobs:
           username: azureuser
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo apt-get install -y docker.io
+            which docker || sudo apt-get install -y docker.io
             sudo docker ps | grep nginx || sudo docker run -d -p 80:80 nginx
